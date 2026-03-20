@@ -1,0 +1,14 @@
+diff --git a/kernel/main.c b/kernel/main.c
+index f0d3171..ac10ab4 100644
+--- a/kernel/main.c
++++ b/kernel/main.c
+@@ -15,6 +15,9 @@ main()
+     printfinit();
+     printf("\n");
+     printf("xv6 kernel is booting\n");
++
++    printf("hart 0 started\n");
++
+     printf("\n");
+     kinit();         // physical page allocator
+     kvminit();       // create kernel page table
