@@ -107,3 +107,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_getNPROC(void)
+{
+  printf("getNPROC: NPROC in kernal = %d\n", NPROC);
+  return NPROC;
+}
