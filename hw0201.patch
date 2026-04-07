@@ -1,0 +1,98 @@
+diff --git a/Makefile b/Makefile
+index 7a28190..b262c0a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -145,7 +145,6 @@ UPROGS=\
+ 	$U/_logstress\
+ 	$U/_forphan\
+ 	$U/_dorphan\
+-	$U/_printNPROC\
+ 
+ fs.img: mkfs/mkfs README $(UPROGS)
+ 	mkfs/mkfs fs.img README $(UPROGS)
+diff --git a/kernel/syscall.c b/kernel/syscall.c
+index 7053f6e..076d965 100644
+--- a/kernel/syscall.c
++++ b/kernel/syscall.c
+@@ -102,8 +102,6 @@ extern uint64 sys_link(void);
+ extern uint64 sys_mkdir(void);
+ extern uint64 sys_close(void);
+ 
+-extern uint64 sys_getNPROC(void);
+-
+ // An array mapping syscall numbers from syscall.h
+ // to the function that handles the system call.
+ static uint64 (*syscalls[])(void) = {
+@@ -128,7 +126,6 @@ static uint64 (*syscalls[])(void) = {
+ [SYS_link]    sys_link,
+ [SYS_mkdir]   sys_mkdir,
+ [SYS_close]   sys_close,
+-[SYS_getNPROC]  sys_getNPROC,
+ };
+ 
+ void
+diff --git a/kernel/syscall.h b/kernel/syscall.h
+index d41ec8a..3dd926d 100644
+--- a/kernel/syscall.h
++++ b/kernel/syscall.h
+@@ -20,5 +20,3 @@
+ #define SYS_link   19
+ #define SYS_mkdir  20
+ #define SYS_close  21
+-
+-#define SYS_getNPROC 22
+\ No newline at end of file
+diff --git a/kernel/sysproc.c b/kernel/sysproc.c
+index 1464edf..419e727 100644
+--- a/kernel/sysproc.c
++++ b/kernel/sysproc.c
+@@ -107,10 +107,3 @@ sys_uptime(void)
+   release(&tickslock);
+   return xticks;
+ }
+-
+-uint64
+-sys_getNPROC(void)
+-{
+-  printf("getNPROC: NPROC in kernal = %d\n", NPROC);
+-  return NPROC;
+-}
+\ No newline at end of file
+diff --git a/user/printNPROC.c b/user/printNPROC.c
+deleted file mode 100644
+index 3106f33..0000000
+--- a/user/printNPROC.c
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#include "kernel/types.h"
+-#include "kernel/stat.h"
+-#include "user/user.h"
+-
+-int main(int argc, char *argv[]){
+-    int nproc_val = getNPROC();
+-    printf("The current value of NPROC = %d\n" ,nproc_val);
+-    exit(0);    
+-}
+\ No newline at end of file
+diff --git a/user/user.h b/user/user.h
+index dfefde4..ac84de9 100644
+--- a/user/user.h
++++ b/user/user.h
+@@ -24,7 +24,6 @@ int getpid(void);
+ char* sys_sbrk(int,int);
+ int pause(int);
+ int uptime(void);
+-int getNPROC(void);
+ 
+ // ulib.c
+ int stat(const char*, struct stat*);
+diff --git a/user/usys.pl b/user/usys.pl
+index a0892d3..c5d4c3a 100755
+--- a/user/usys.pl
++++ b/user/usys.pl
+@@ -42,4 +42,3 @@ entry("getpid");
+ entry("sbrk");
+ entry("pause");
+ entry("uptime");
+-entry("getNPROC");
+\ No newline at end of file
